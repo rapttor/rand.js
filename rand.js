@@ -1,3 +1,11 @@
+/**
+ * include with CDN: 
+ * https://cdn.jsdelivr.net/gh/rapttor/rand.js@master/rand.js
+ * <script src="https://cdn.jsdelivr.net/gh/rapttor/rand.js@master/rand.js"></script>
+ * 
+ * use with Rand.value() or Rand.valueInBetween(min, max);
+ * for additional demo check test method;
+ */
 var Rand = {
     seed: false,
     generator: function () { }, // will be initialized;
@@ -9,16 +17,22 @@ var Rand = {
         return Rand.value() * (max - min) + min;
     },
     test: function () {
-        methods = [Rand.mulberry16, Rand.mulberry16, Rand.sfc32];
-        phrases = ['test', 'rand', 'test', 'random']; // repeated phrases to ensure consitence
-        result = [];
+        var methods = [Rand.mulberry16, Rand.mulberry16, Rand.sfc32];
+        var phrases = ['test', 'rand', 'test', 'random']; // repeated phrases to ensure consitence
+        var range = [11, 22];
+        var result = [];
         for (var m in methods) {
             for (var p in phrases) {
                 Rand.init(phrases[p], methods[m]);
-                var test = { 'Method': methods[m].name, 'Phrase': phrases[p], 'values': [] };
+                var $range = 'range (' + range[0] + '/' + range[1] + ')';
+                var test = { 'Method': methods[m].name, 'Phrase': phrases[p], 'values': [], 'range': [$range] };
                 for (var i = 0; i < 10; i++) {
                     var v = Rand.value();
                     test.values.push(v);
+                }
+                for (var i = 0; i < 10; i++) {
+                    var v = Rand.valueBetween(range[0], range[1]);
+                    test.range.push(v);
                 }
                 result.push(test);
             }
@@ -98,12 +112,10 @@ var Rand = {
     init: function ($phrase, $method) {
         $phrase = $phrase || "Rand";
         $method = $method || Rand.mulberry16;
-        var seed = Rand.cyrb128($phrase);
-        Rand.seed = seed;
+        Rand.seed = Rand.cyrb128($phrase);
         Rand.generator = $method(Rand.seed[0]);
         //var rand = sfc32(seed[0], seed[1], seed[2], seed[3]);        
     },
     credits: 'http://www.rapttor.com'
 }
-
-Rand.test();
+// Rand.test();

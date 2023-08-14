@@ -33,7 +33,7 @@ var Rand = {
         return Rand.value() * (max - min) + min;
     },
     test: function () {
-        var methods = [Rand.mulberry16, Rand.mulberry16, Rand.sfc32];
+        var methods = [Rand.mulberry16, Rand.mulberry16, Rand.sfc32, Rand.jenkins, Rand.randomizer];
         var phrases = ['test', 'rand', 'test', 'random']; // repeated phrases to ensure consitence
         var range = [11, 22];
         var result = [];
@@ -54,6 +54,7 @@ var Rand = {
             }
         }
         console.log(JSON.stringify(result));
+        return result;
     },
     mulberry32: function (seed) {
         return function () {
@@ -125,6 +126,47 @@ var Rand = {
         h1 ^= (h2 ^ h3 ^ h4), h2 ^= h1, h3 ^= h1, h4 ^= h1;
         return [h1 >>> 0, h2 >>> 0, h3 >>> 0, h4 >>> 0];
     },
+    jenkins: function () {
+        var seed = Rand.seed;
+        return function () {
+            // Robert Jenkins’ 32 bit integer hash function
+            seed = ((seed + 0x7ED55D16) + (seed << 12)) & 0xFFFFFFFF;
+            seed = ((seed ^ 0xC761C23C) ^ (seed >>> 19)) & 0xFFFFFFFF;
+            seed = ((seed + 0x165667B1) + (seed << 5)) & 0xFFFFFFFF;
+            seed = ((seed + 0xD3A2646C) ^ (seed << 9)) & 0xFFFFFFFF;
+            seed = ((seed + 0xFD7046C5) + (seed << 3)) & 0xFFFFFFFF;
+            seed = ((seed ^ 0xB55A4F09) ^ (seed >>> 16)) & 0xFFFFFFFF;
+            return (seed & 0xFFFFFFF) / 0x10000000;
+        };
+    },
+    randomizer: function (s) {
+        s = s || Math.random() * 1000;
+        var mask = 0xffffffff;
+        var m_w = (123456789 + s) & mask;
+        var m_z = (987654321 - s) & mask;
+        return function () {
+            m_z = (36969 * (m_z & 65535) + (m_z >>> 16)) & mask;
+            m_w = (18000 * (m_w & 65535) + (m_w >>> 16)) & mask;
+
+            var result = ((m_z << 16) + (m_w & 65535)) >>> 0;
+            result /= 4294967296;
+            return result;
+        }
+    },
+    convertFromHex: function (hex) {
+        var hex = hex.toString();//force conversion
+        var str = '';
+        for (var i = 0; i < hex.length; i += 2)
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        return str;
+    },
+    convertToHex: function (str) {
+        var hex = '';
+        for (var i = 0; i < str.length; i++) {
+            hex += '' + str.charCodeAt(i).toString(16);
+        }
+        return hex;
+    },
     init: function ($phrase, $method) {
         $phrase = $phrase || "Rand";
         $method = $method || Rand.mulberry16;
@@ -134,4 +176,4 @@ var Rand = {
     },
     credits: 'http://www.rapttor.com'
 }
-// Rand.test();
+Rand.test();

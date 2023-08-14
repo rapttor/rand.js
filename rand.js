@@ -4,12 +4,17 @@
  * Author: RapTToR
  * License: MIT
  * 
- * Description: rand.js is a versatile JavaScript library that empowers developers 
+ * [Description]
+ * 
+ * rand.js is a versatile JavaScript library that empowers developers 
  * to generate high-quality random numbers using various state-of-the-art algorithms. 
  * With support for algorithms like Mulberry32, Mulberry16, SFC32, Xoshiro128SS, JSF32, and CyRB128, 
  * This library offers a range of options for generating random values. 
- * Whether you're building a game, conducting simulations, or creating randomized content, 
- * it provides a reliable and efficient solution for all your random number generation needs.
+ * 
+ * Craft engaging games, conduct intricate simulations, and craft serendipitous 
+ * content with precision. From the art of chance to informed randomness, 
+ * this library's diverse methods offer tailored solutions for diverse projects. 
+ * Experience the future of random number generation, now at your fingertips.
  * 
  * Usage: include with CDN: 
  * <script src="https://cdn.jsdelivr.net/gh/rapttor/rand.js@master/rand.js"></script>
